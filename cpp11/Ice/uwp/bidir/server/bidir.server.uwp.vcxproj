@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.props" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.props') and '$(ICE_SRC_DIST)' != 'yes'" />
+  <Import Project="..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.props" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.props') and '$(ICE_SRC_DIST)' != 'all'" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{11af79c7-8e73-4cfa-aa03-41c45027c7bb}</ProjectGuid>
+    <ProjectGuid>{647C6FD3-E5E5-4451-949D-A41D2A911868}</ProjectGuid>
     <RootNamespace>bidir</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
@@ -12,7 +12,7 @@
     <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
-    <ProjectName>client</ProjectName>
+    <ProjectName>server</ProjectName>
     <IceBuilderInstallDir>$([MSBuild]::GetRegistryValue('HKEY_CURRENT_USER\SOFTWARE\ZeroC\IceBuilder', 'InstallDir.$(VisualStudioVersion)'))</IceBuilderInstallDir>
     <IceBuilderCppProps>$(IceBuilderInstallDir)\Resources\IceBuilder.Cpp.props</IceBuilderCppProps>
     <IceBuilderCppTargets>$(IceBuilderInstallDir)\Resources\IceBuilder.Cpp.targets</IceBuilderCppTargets>
@@ -78,8 +78,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <PackageCertificateKeyFile>client_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>4B33133E74AF57A121EA2C82E5C4A24B177EDC94</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>server_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>AF349493365EE949055507A9ACDACA176B2CC796</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>uwp\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
@@ -174,9 +174,12 @@
     <AppxManifest Include="Package.uwp.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="client_TemporaryKey.pfx" />
+    <None Include="..\..\..\..\..\certs\cacert.der">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="packages.config" />
     <None Include="README.md" />
+    <None Include="server_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
@@ -227,20 +230,20 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(IceBuilderCppTargets)" Condition="Exists('$(IceBuilderCppTargets)')" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.targets') and '$(UseIceHome)' != 'yes'" />
-    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-alpha4\build\native\zeroc.ice.uwp.arm.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-alpha4\build\native\zeroc.ice.uwp.arm.targets') and '$(ICE_SRC_DIST)' != 'yes'" />
-    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-alpha4\build\native\zeroc.ice.uwp.x64.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-alpha4\build\native\zeroc.ice.uwp.x64.targets') and '$(ICE_SRC_DIST)' != 'yes'" />
-    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-alpha4\build\native\zeroc.ice.uwp.x86.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-alpha4\build\native\zeroc.ice.uwp.x86.targets') and '$(ICE_SRC_DIST)' != 'yes'" />
+    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.targets') and '$(UseIceHome)' != 'all'" />
+    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-beta0\build\native\zeroc.ice.uwp.arm.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-beta0\build\native\zeroc.ice.uwp.arm.targets') and '$(ICE_SRC_DIST)' != 'all'" />
+    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-beta0\build\native\zeroc.ice.uwp.x64.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-beta0\build\native\zeroc.ice.uwp.x64.targets') and '$(ICE_SRC_DIST)' != 'all'" />
+    <Import Project="..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-beta0\build\native\zeroc.ice.uwp.x86.targets" Condition="Exists('..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-beta0\build\native\zeroc.ice.uwp.x86.targets') and '$(ICE_SRC_DIST)' != 'all'" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild" Condition="'$(UseIceHome)' != 'yes'">
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild" Condition="'$(UseIceHome)' != 'all'">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.targets') and '$(ICE_SRC_DIST)' != 'yes'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-alpha4\build\native\zeroc.ice.uwp.arm.targets') and '$(ICE_SRC_DIST)' != 'yes'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-alpha4\build\native\zeroc.ice.uwp.arm.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-alpha4\build\native\zeroc.ice.uwp.x64.targets') and '$(ICE_SRC_DIST)' != 'yes'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-alpha4\build\native\zeroc.ice.uwp.x64.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-alpha4\build\native\zeroc.ice.uwp.x86.targets') and '$(ICE_SRC_DIST)' != 'yes'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-alpha4\build\native\zeroc.ice.uwp.x86.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.props') and '$(ICE_SRC_DIST)' != 'yes'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.3.7.0-alpha4\build\native\zeroc.ice.uwp.props'))" />
+    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.targets') and '$(ICE_SRC_DIST)' != 'all'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-beta0\build\native\zeroc.ice.uwp.arm.targets') and '$(ICE_SRC_DIST)' != 'all'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.arm.3.7.0-beta0\build\native\zeroc.ice.uwp.arm.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-beta0\build\native\zeroc.ice.uwp.x64.targets') and '$(ICE_SRC_DIST)' != 'all'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.x64.3.7.0-beta0\build\native\zeroc.ice.uwp.x64.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-beta0\build\native\zeroc.ice.uwp.x86.targets') and '$(ICE_SRC_DIST)' != 'all'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.x86.3.7.0-beta0\build\native\zeroc.ice.uwp.x86.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.props') and '$(ICE_SRC_DIST)' != 'all'" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\zeroc.ice.uwp.3.7.0-beta0\build\native\zeroc.ice.uwp.props'))" />
   </Target>
   <Target Name="EnsureIceBuilderImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

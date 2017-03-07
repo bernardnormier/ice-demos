@@ -4,7 +4,6 @@
 //
 // **********************************************************************
 
-#include <IceUtil/IceUtil.h>
 #include <Ice/Ice.h>
 #include <Callback.h>
 
@@ -30,11 +29,7 @@ public:
 };
 
 int
-#ifdef _WIN32
-wmain(int argc, wchar_t* argv[])
-#else
 main(int argc, char* argv[])
-#endif
 {
     CallbackClient app;
     return app.main(argc, argv, "config.client");

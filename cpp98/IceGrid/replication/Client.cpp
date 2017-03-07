@@ -4,7 +4,6 @@
 //
 // **********************************************************************
 
-#include <IceUtil/IceUtil.h>
 #include <Ice/Ice.h>
 #include <IceGrid/IceGrid.h>
 #include <Hello.h>
@@ -25,11 +24,7 @@ private:
 };
 
 int
-#ifdef _WIN32
-wmain(int argc, wchar_t* argv[])
-#else
 main(int argc, char* argv[])
-#endif
 {
     HelloClient app;
     return app.main(argc, argv, "config.client");
@@ -85,7 +80,7 @@ HelloClient::run(int argc, char* argv[])
         {
             delay = 500; // 500 milli-seconds
         }
-        
+
         for(int i = 0; i < count; i++)
         {
             cout << hello->getGreeting() << endl;

@@ -5,7 +5,6 @@
 // **********************************************************************
 
 #include <Ice/Ice.h>
-#include <IceUtil/IceUtil.h> // For generateUUID.
 #include <Glacier2/Glacier2.h>
 #include <ChatSessionI.h>
 
@@ -64,11 +63,7 @@ public:
 
 
 int
-#ifdef _WIN32
-wmain(int argc, wchar_t* argv[])
-#else
 main(int argc, char* argv[])
-#endif
 {
 #ifdef ICE_STATIC_LIBS
     Ice::registerIceSSL();

@@ -4,7 +4,6 @@
 //
 // **********************************************************************
 
-#include <IceUtil/IceUtil.h>
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
@@ -32,11 +31,7 @@ public:
 };
 
 int
-#ifdef _WIN32
-wmain(int argc, wchar_t* argv[])
-#else
 main(int argc, char* argv[])
-#endif
 {
     Subscriber app;
     return app.main(argc, argv, "config.sub");
@@ -161,7 +156,7 @@ Subscriber::run(int argc, char* argv[])
 
     IceStorm::TopicPrx topic;
     try
-    {  
+    {
         topic = manager->retrieve(topicName);
     }
     catch(const IceStorm::NoSuchTopic&)
