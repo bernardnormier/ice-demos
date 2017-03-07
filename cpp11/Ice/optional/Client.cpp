@@ -14,7 +14,7 @@ class ContactClient : public Ice::Application
 {
 public:
 
-    virtual int run(int, char*[]);
+    virtual int run(int, char*[]) override;
 };
 
 int
@@ -40,7 +40,7 @@ ContactClient::run(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    ContactDBPrx contactdb = ContactDBPrx::checkedCast(communicator()->propertyToProxy("ContactDB.Proxy"));
+    auto contactdb = Ice::checkedCast<ContactDBPrx>(communicator()->propertyToProxy("ContactDB.Proxy"));
     if(!contactdb)
     {
         cerr << argv[0] << ": invalid proxy" << endl;
@@ -51,16 +51,19 @@ ContactClient::run(int argc, char* argv[])
     // Add a contact for "john". All parameters are provided.
     //
     const string johnNumber = "123-456-7890";
-    contactdb->addContact("john", HOME, johnNumber, 0);
+    contactdb->addContact("john", NumberType::HOME, johnNumber, 0);
 
     cout << "Checking john... " << flush;
 
     //
-    // Find the phone number for "john"
+    // Find the phone number for "john" and put it in a Ice::optional, a temporary alias
+    // for C++17 std::optional http://en.cppreference.com/w/cpp/utility/optional
     //
-    IceUtil::Optional<string> number = contactdb->queryNumber("john");
+    // number is an Ice::optional<std::string>
     //
-    // operator bool() tests if an optional value is set.
+    auto number = contactdb->queryNumber("john");
+    //
+    // tests if an optional value is set.
     //
     if(!number)
     {
@@ -68,7 +71,7 @@ ContactClient::run(int argc, char* argv[])
     }
 
     //
-    // Operator overloading on the IceUtil::Optional makes comparison convenient.
+    // Operator overloading makes comparison convenient.
     //
     if(number != johnNumber)
     {
@@ -76,9 +79,9 @@ ContactClient::run(int argc, char* argv[])
     }
 
     //
-    // .get() can also be called to get the value directly if necessary.
+    // .value() can also be called to get the value directly if necessary.
     //
-    if(number.get() != johnNumber)
+    if(number.value() != johnNumber)
     {
         cout << "number is incorrect " << flush;
     }
@@ -93,14 +96,14 @@ ContactClient::run(int argc, char* argv[])
     }
 
     // Optional can also be used in an out parameter.
-    IceUtil::Optional<Ice::Int> dialgroup;
+    Ice::optional<int> dialgroup;
     contactdb->queryDialgroup("john", dialgroup);
     if(!dialgroup || dialgroup != 0)
     {
         cout << "dialgroup is incorrect " << flush;
     }
 
-    ContactPtr info = contactdb->query("john");
+    auto info = contactdb->query("john");
     //
     // All of the info parameters should be set.
     //
@@ -108,7 +111,7 @@ ContactClient::run(int argc, char* argv[])
     {
         cout << "info is incorrect " << flush;
     }
-    if(info->type != HOME || info->number != johnNumber || info->dialGroup != 0)
+    if(info->type != NumberType::HOME || info->number != johnNumber || info->dialGroup != 0)
     {
         cout << "info is incorrect " << flush;
     }
@@ -122,7 +125,7 @@ ContactClient::run(int argc, char* argv[])
     // the default value.
     //
     const string steveNumber = "234-567-8901";
-    contactdb->addContact("steve", IceUtil::None, steveNumber, 1);
+    contactdb->addContact("steve", Ice::nullopt, steveNumber, 1);
 
     cout << "Checking steve... " << flush;
     number = contactdb->queryNumber("steve");
@@ -135,7 +138,7 @@ ContactClient::run(int argc, char* argv[])
     //
     // Check the value for the NumberType.
     //
-    if(!info->type || info->type != HOME)
+    if(!info->type || info->type != NumberType::HOME)
     {
         cout << "info is incorrect " << flush;
     }
@@ -157,7 +160,7 @@ ContactClient::run(int argc, char* argv[])
     // Add a contact from "frank". Here the dialGroup field isn't set.
     //
     const string frankNumber = "345-678-9012";
-    contactdb->addContact("frank", CELL, frankNumber, IceUtil::None);
+    contactdb->addContact("frank", NumberType::CELL, frankNumber, Ice::nullopt);
 
     cout << "Checking frank... " << flush;
 
@@ -175,7 +178,7 @@ ContactClient::run(int argc, char* argv[])
     {
         cout << "info is incorrect " << flush;
     }
-    if(info->type != CELL || info->number != frankNumber)
+    if(info->type != NumberType::CELL || info->number != frankNumber)
     {
         cout << "info is incorrect " << flush;
     }
@@ -190,7 +193,7 @@ ContactClient::run(int argc, char* argv[])
     //
     // Add a contact from "anne". The number field isn't set.
     //
-    contactdb->addContact("anne", OFFICE, IceUtil::None, 2);
+    contactdb->addContact("anne", NumberType::OFFICE, Ice::nullopt, 2);
 
     cout << "Checking anne... " << flush;
     number = contactdb->queryNumber("anne");
@@ -207,7 +210,7 @@ ContactClient::run(int argc, char* argv[])
     {
         cout << "info is incorrect " << flush;
     }
-    if(info->type != OFFICE || info->dialGroup != 2)
+    if(info->type != NumberType::OFFICE || info->dialGroup != 2)
     {
         cout << "info is incorrect " << flush;
     }
@@ -224,14 +227,14 @@ ContactClient::run(int argc, char* argv[])
     // the remainder of the fields are unchanged.
     //
     const string anneNumber = "456-789-0123";
-    contactdb->updateContact("anne", IceUtil::None, anneNumber, IceUtil::None);
+    contactdb->updateContact("anne", Ice::nullopt, anneNumber, Ice::nullopt);
     number = contactdb->queryNumber("anne");
     if(number != anneNumber)
     {
         cout << "number is incorrect " << flush;
     }
     info = contactdb->query("anne");
-    if(info->number != anneNumber || info->type != OFFICE || info->dialGroup != 2)
+    if(info->number != anneNumber || info->type != NumberType::OFFICE || info->dialGroup != 2)
     {
         cout << "info is incorrect " << flush;
     }
