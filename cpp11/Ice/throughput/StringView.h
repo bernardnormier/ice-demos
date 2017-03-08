@@ -13,7 +13,7 @@ namespace Util
 {
 
 //
-// A simplified C++98-compatible placeholder for std::string_view
+// A simplified placeholder for std::string_view
 // http://en.cppreference.com/w/cpp/string/basic_string_view
 //
 
@@ -21,19 +21,10 @@ class string_view
 {
 public:
 
-    string_view() :
-        _data(0),
-        _size(0)
-    {
-    }
-
-    string_view(const string_view& sv) :
-        _data(sv._data),
-        _size(sv._size)
-    {
-    }
-
-    string_view(const char* str, size_t len) :
+    constexpr string_view() = default;
+    constexpr string_view(const string_view&) = default;
+    
+    constexpr string_view(const char* str, size_t len) :
         _data(str),
         _size(len)
     {
@@ -45,29 +36,24 @@ public:
     {
     }
 
-    string_view& operator=(const string_view& sv)
-    {
-        _data = sv._data;
-        _size = sv._size;
-        return *this;
-    }
+    string_view& operator=(const string_view&) = default;
 
-    size_t size() const
+    constexpr size_t size() const
     {
         return _size;
     }
 
-    size_t length() const
+    constexpr size_t length() const
     {
         return _size;
     }
 
-    bool empty() const
+    constexpr bool empty() const
     {
         return _size != 0;
     }
 
-    const char* data() const
+    constexpr const char* data() const
     {
         return _data;
     }
@@ -96,8 +82,8 @@ public:
     }
 
 private:
-    const char* _data;
-    size_t _size;
+    const char* _data = nullptr;
+    size_t _size = 0;
 };
 
 inline bool
@@ -120,7 +106,7 @@ namespace Ice
 
 //
 // Describes how to marshal/unmarshal a Util::string_view
-// It would be the same for a string_ref or std::string_view
+// It would be the same for a std::string_view
 //
 
 template<>
@@ -137,7 +123,7 @@ struct StreamHelper<Util::string_view, StreamHelperCategoryBuiltin>
     template<class S> static inline void
     write(S* stream, const Util::string_view& v)
     {
-        stream->write(v.data(), v.size(), false);
+        stream->write(v.data(), v.size());
     }
 
     template<class S> static inline void

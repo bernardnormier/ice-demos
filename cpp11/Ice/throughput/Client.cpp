@@ -6,7 +6,6 @@
 
 #include <Ice/Ice.h>
 #include <Throughput.h>
-
 #include <iomanip>
 
 using namespace std;
@@ -17,7 +16,7 @@ class ThroughputClient : public Ice::Application
 public:
 
     ThroughputClient();
-    virtual int run(int, char*[]);
+    virtual int run(int, char*[]) override;
 
 private:
 
@@ -40,7 +39,7 @@ ThroughputClient::ThroughputClient() :
     // Since this is an interactive demo we don't want any signal
     // handling.
     //
-    Ice::Application(Ice::NoSignalHandling)
+    Ice::Application(Ice::SignalPolicy::NoSignalHandling)
 {
 }
 
@@ -53,28 +52,23 @@ ThroughputClient::run(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    ThroughputPrx throughput = ThroughputPrx::checkedCast(communicator()->propertyToProxy("Throughput.Proxy"));
+    auto throughput = Ice::checkedCast<ThroughputPrx>(communicator()->propertyToProxy("Throughput.Proxy"));
     if(!throughput)
     {
         cerr << argv[0] << ": invalid proxy" << endl;
         return EXIT_FAILURE;
     }
 
-    ThroughputPrx throughputOneway = throughput->ice_oneway();
+    auto throughputOneway = throughput->ice_oneway();
 
     ByteSeq byteSeq(ByteSeqSize);
-    pair<const Ice::Byte*, const Ice::Byte*> byteArr;
-    byteArr.first = &byteSeq[0];
-    byteArr.second = byteArr.first + byteSeq.size();
+    auto byteArr = make_pair(byteSeq.data(), byteSeq.data() + byteSeq.size());
 
     StringSeq stringSeq(StringSeqSize, "hello");
     vector<Util::string_view> stringViewSeq(StringSeqSize, "hello");
 
-    StringDouble stringDoubleVal = { "hello", 3.14 };
-    StringDoubleSeq structSeq(StringDoubleSeqSize, stringDoubleVal);
-
-    Fixed fixedVal = { 0, 0, 0.0 };
-    FixedSeq fixedSeq(FixedSeqSize, fixedVal);
+    StringDoubleSeq structSeq(StringDoubleSeqSize, { "hello", 3.14 });
+    FixedSeq fixedSeq(FixedSeqSize, { 0, 0, 0.0 });
 
     //
     // To allow cross-language tests we may need to "warm up" the
@@ -87,9 +81,7 @@ ThroughputClient::run(int argc, char* argv[])
         throughput->startWarmup();
 
         ByteSeq emptyBytesBuf(1);
-        pair<const Ice::Byte*, const Ice::Byte*> emptyBytes;
-        emptyBytes.first = &emptyBytesBuf[0];
-        emptyBytes.second = emptyBytes.first + emptyBytesBuf.size();
+        auto emptyBytes = make_pair(emptyBytesBuf.data(), emptyBytesBuf.data() + emptyBytesBuf.size());
 
         vector<Util::string_view> emptyStringViews(1);
         StringDoubleSeq emptyStructs(1);
@@ -139,7 +131,7 @@ ThroughputClient::run(int argc, char* argv[])
             cout << "==> ";
             cin >> c;
 
-            IceUtil::Time tm = IceUtil::Time::now(IceUtil::Time::Monotonic);
+            auto start = chrono::high_resolution_clock::now();
             const int repetitions = 1000;
 
             if(c == '1' || c == '2' || c == '3' || c == '4')
@@ -366,9 +358,9 @@ ThroughputClient::run(int argc, char* argv[])
                     }
                 }
 
-                tm = IceUtil::Time::now(IceUtil::Time::Monotonic) - tm;
-                cout << "time for " << repetitions << " sequences: " << tm * 1000 << "ms" << endl;
-                cout << "time per sequence: " << tm * 1000 / repetitions << "ms" << endl;
+                auto duration = chrono::duration<float, chrono::milliseconds::period>(chrono::high_resolution_clock::now() - start);
+                cout << "time for " << repetitions << " sequences: " << duration.count() << "ms" << endl;
+                cout << "time per sequence: " << duration.count() / repetitions << "ms" << endl;
                 int wireSize = 0;
                 switch(currentType)
                 {
@@ -394,7 +386,7 @@ ThroughputClient::run(int argc, char* argv[])
                         break;
                     }
                 }
-                double mbit = repetitions * seqSize * wireSize * 8.0 / tm.toMicroSeconds();
+                double mbit = repetitions * seqSize * wireSize * 8.0 / duration.count() / 1000;
                 if(c == 'e')
                 {
                     mbit *= 2;
