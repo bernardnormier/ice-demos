@@ -23,7 +23,7 @@ public:
 
     constexpr string_view() = default;
     constexpr string_view(const string_view&) = default;
-    
+
     constexpr string_view(const char* str, size_t len) :
         _data(str),
         _size(len)

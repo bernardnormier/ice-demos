@@ -4,6 +4,11 @@
 //
 // **********************************************************************
 
+// TODO: remove when no longer needed
+#ifdef _MSC_VER
+#    pragma warning(disable:4702) // unreachable code in optional
+#endif
+
 #include <Ice/Ice.h>
 #include <Contact.h>
 

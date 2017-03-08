@@ -45,7 +45,7 @@ Demo::Throughput::RecvByteSeqMarshaledResult
 ThroughputI::recvByteSeq(const Ice::Current& current)
 {
     std::pair<const Ice::Byte*, const Ice::Byte*> ret = { nullptr, nullptr };
-    
+
     if(!_warmup)
     {
         ret = std::make_pair(_byteSeq.data(), _byteSeq.data() + _byteSeq.size());
