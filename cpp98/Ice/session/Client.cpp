@@ -7,47 +7,8 @@
 #include <Ice/Ice.h>
 #include <Session.h>
 
-#ifdef _WIN32
-const DWORD SIGHUP = CTRL_LOGOFF_EVENT;
-#else
-#   include <csignal>
-#endif
-
 using namespace std;
 using namespace Demo;
-
-class RefreshTask : public IceUtil::TimerTask
-{
-public:
-
-    RefreshTask(const Ice::LoggerPtr& logger, const SessionPrx& session) :
-        _logger(logger),
-        _session(session)
-    {
-    }
-
-    virtual void
-    runTimerTask()
-    {
-        try
-        {
-            _session->refresh();
-        }
-        catch(const Ice::Exception& ex)
-        {
-            Ice::Warning warn(_logger);
-            warn << "RefreshTask: " << ex;
-        }
-    }
-
-private:
-
-    // Required to prevent compiler warnings with MSVC++
-    RefreshTask& operator=(const RefreshTask&);
-
-    const Ice::LoggerPtr _logger;
-    const SessionPrx _session;
-};
 
 class SessionClient : public Ice::Application
 {
@@ -66,7 +27,6 @@ private:
     // another so shared variables must be mutex protected.
     //
     IceUtil::Mutex _mutex;
-    IceUtil::TimerPtr _timer;
     SessionPrx _session;
 };
 
@@ -118,9 +78,6 @@ SessionClient::run(int argc, char* argv[])
     {
         IceUtil::Mutex::Lock sync(_mutex);
         _session = factory->create(name);
-
-        _timer = new IceUtil::Timer();
-        _timer->scheduleRepeated(new RefreshTask(communicator()->getLogger(), _session), IceUtil::Time::seconds(5));
     }
 
     vector<HelloPrx> hellos;
@@ -210,18 +167,6 @@ void
 SessionClient::cleanup(bool destroy)
 {
     IceUtil::Mutex::Lock sync(_mutex);
-
-    //
-    // The refresher thread must be terminated before destroy is
-    // called, otherwise it might get ObjectNotExistException. refresh
-    // is set to 0 so that if session->destroy() raises an exception
-    // the thread will not be re-terminated and re-joined.
-    //
-    if(_timer)
-    {
-        _timer->destroy();
-        _timer = 0;
-    }
 
     if(destroy && _session)
     {
