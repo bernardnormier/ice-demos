@@ -90,11 +90,15 @@ SessionFactoryI::deadClient(const Ice::ConnectionPtr& con)
         try
         {
             session->destroy();
-            cout << "Cleaned up dead client" << endl;
+            cout << "Cleaned up dead client." << endl;
         }
         catch(const Ice::ObjectNotExistException&)
         {
             // The client already destroyed this session
+        }
+        catch(const Ice::ConnectionRefusedException&)
+        {
+            // Server is shutting down
         }
     }
 }
