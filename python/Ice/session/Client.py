@@ -11,6 +11,7 @@ Ice.loadSlice('Session.ice')
 import Demo
 
 class Client(Ice.Application):
+
     def run(self, args):
         if len(args) > 1:
             print(self.appName() + ": too many arguments")

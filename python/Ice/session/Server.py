@@ -43,7 +43,7 @@ class SessionI(Demo._SessionDisp):
         finally:
             self._lock.release()
 
-    def getName(self, c):
+    def getName(self, current):
         self._lock.acquire()
         try:
             if self._destroy:
