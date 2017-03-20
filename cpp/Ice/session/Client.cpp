@@ -128,7 +128,7 @@ SessionClient::run(int argc, char* argv[])
         }
     } while(cin.good());
 
-    if(destroy)
+    if(cin.good() && destroy)
     {
         session->destroy();
     }
