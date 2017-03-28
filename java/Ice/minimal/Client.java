@@ -14,7 +14,6 @@ public class Client
         {
             HelloPrx hello = HelloPrx.checkedCast(communicator.stringToProxy("hello:default -h localhost -p 10000"));
             hello.sayHello();
-            communicator.destroy();
         }
     }
 }

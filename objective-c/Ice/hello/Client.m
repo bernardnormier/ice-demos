@@ -28,19 +28,13 @@ menu()
 }
 
 int
-run(int argc, char* argv[], id<ICECommunicator> communicator)
+run(id<ICECommunicator> communicator)
 {
-    if(argc > 1)
-    {
-        fprintf(stderr, "%s: too many arguments\n", argv[0]);
-        return EXIT_FAILURE;
-    }
-
     id<DemoHelloPrx> twoway = [DemoHelloPrx checkedCast:
           [[[[communicator propertyToProxy:@"Hello.Proxy"] ice_twoway] ice_timeout:-1] ice_secure:NO]];
     if(!twoway)
     {
-        fprintf(stderr, "%s: invalid proxy\n", argv[0]);
+        fprintf(stderr, "invalid proxy\n");
         return EXIT_FAILURE;
     }
     id<DemoHelloPrx> oneway = [twoway ice_oneway];
@@ -214,12 +208,17 @@ main(int argc, char* argv[])
         id<ICECommunicator> communicator = nil;
         @try
         {
-            ICEInitializationData* initData = [ICEInitializationData initializationData];
-            initData.properties = [ICEUtil createProperties];
-            [initData.properties load:@"config.client"];
+            communicator = [ICEUtil createCommunicator:&argc argv:argv configFile:@"config.client"];
 
-            communicator = [ICEUtil createCommunicator:&argc argv:argv initData:initData];
-            status = run(argc, argv, communicator);
+            if(argc > 1)
+            {
+                fprintf(stderr, "%s: too many arguments\n", argv[0]);
+                status = EXIT_FAILURE;
+            }
+            else
+            {
+                status = run(communicator);
+            }
         }
         @catch(ICELocalException* ex)
         {
@@ -227,10 +226,7 @@ main(int argc, char* argv[])
             status = EXIT_FAILURE;
         }
 
-        if(communicator != nil)
-        {
-            [communicator destroy];
-        }
+        [communicator destroy];
     }
     return status;
 }
