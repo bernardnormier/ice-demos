@@ -10,23 +10,6 @@ import sys, traceback, Ice
 Ice.loadSlice('Hello.ice')
 import Demo
 
-def menu():
-    print("""
-usage:
-t: send greeting as twoway
-o: send greeting as oneway
-O: send greeting as batch oneway
-d: send greeting as datagram
-D: send greeting as batch datagram
-f: flush all batch requests
-T: set a timeout
-P: set a server delay
-S: switch secure mode on/off
-s: shutdown server
-x: exit
-?: help
-""")
-
 def run(communicator):
     twoway = Demo.HelloPrx.checkedCast(\
         communicator.propertyToProxy('Hello.Proxy').ice_twoway().ice_secure(False))
@@ -124,6 +107,23 @@ def run(communicator):
             print(ex)
 
     return 0
+
+def menu():
+    print("""
+usage:
+t: send greeting as twoway
+o: send greeting as oneway
+O: send greeting as batch oneway
+d: send greeting as datagram
+D: send greeting as batch datagram
+f: flush all batch requests
+T: set a timeout
+P: set a server delay
+S: switch secure mode on/off
+s: shutdown server
+x: exit
+?: help
+""")
 
 
 status = 0

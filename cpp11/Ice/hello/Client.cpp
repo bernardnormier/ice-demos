@@ -10,12 +10,7 @@
 using namespace std;
 using namespace Demo;
 
-namespace
-{
-
 int run(const shared_ptr<Ice::Communicator>&);
-
-}
 
 int
 main(int argc, char* argv[])
@@ -55,9 +50,6 @@ main(int argc, char* argv[])
 
     return status;
 }
-
-namespace
-{
 
 void menu();
 
@@ -236,6 +228,4 @@ menu()
         "s: shutdown server\n"
         "x: exit\n"
         "?: help\n";
-}
-
 }

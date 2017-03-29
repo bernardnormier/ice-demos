@@ -8,7 +8,7 @@ import Demo.*;
 
 public class Client
 {
-    public static void main(String[] args) throws Exception
+    public static void main(String[] args)
     {
         int status = 0;
         java.util.List<String> extraArgs = new java.util.ArrayList<>();

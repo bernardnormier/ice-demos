@@ -6,26 +6,43 @@
 
 #import <objc/Ice.h>
 #import <Hello.h>
-
 #import <stdio.h>
 
-void
-menu()
+int run(id<ICECommunicator>);
+
+int
+main(int argc, char* argv[])
 {
-    printf("usage:\n"
-           "t: send greeting as twoway\n"
-           "o: send greeting as oneway\n"
-           "O: send greeting as batch oneway\n"
-           "d: send greeting as datagram\n"
-           "D: send greeting as batch datagram\n"
-           "f: flush all batch requests\n"
-           "T: set a timeout\n"
-           "P: set server delay\n"
-           "S: switch secure mode on/off\n"
-           "s: shutdown server\n"
-           "x: exit\n"
-           "?: help\n");
+    int status = EXIT_SUCCESS;
+    @autoreleasepool
+    {
+        id<ICECommunicator> communicator = nil;
+        @try
+        {
+            communicator = [ICEUtil createCommunicator:&argc argv:argv configFile:@"config.client"];
+
+            if(argc > 1)
+            {
+                fprintf(stderr, "%s: too many arguments\n", argv[0]);
+                status = EXIT_FAILURE;
+            }
+            else
+            {
+                status = run(communicator);
+            }
+        }
+        @catch(ICELocalException* ex)
+        {
+            NSLog(@"%@", ex);
+            status = EXIT_FAILURE;
+        }
+
+        [communicator destroy];
+    }
+    return status;
 }
+
+void menu();
 
 int
 run(id<ICECommunicator> communicator)
@@ -199,34 +216,20 @@ run(id<ICECommunicator> communicator)
     return EXIT_SUCCESS;
 }
 
-int
-main(int argc, char* argv[])
+void
+menu()
 {
-    int status = EXIT_SUCCESS;
-    @autoreleasepool
-    {
-        id<ICECommunicator> communicator = nil;
-        @try
-        {
-            communicator = [ICEUtil createCommunicator:&argc argv:argv configFile:@"config.client"];
-
-            if(argc > 1)
-            {
-                fprintf(stderr, "%s: too many arguments\n", argv[0]);
-                status = EXIT_FAILURE;
-            }
-            else
-            {
-                status = run(communicator);
-            }
-        }
-        @catch(ICELocalException* ex)
-        {
-            NSLog(@"%@", ex);
-            status = EXIT_FAILURE;
-        }
-
-        [communicator destroy];
-    }
-    return status;
+    printf("usage:\n"
+           "t: send greeting as twoway\n"
+           "o: send greeting as oneway\n"
+           "O: send greeting as batch oneway\n"
+           "d: send greeting as datagram\n"
+           "D: send greeting as batch datagram\n"
+           "f: flush all batch requests\n"
+           "T: set a timeout\n"
+           "P: set server delay\n"
+           "S: switch secure mode on/off\n"
+           "s: shutdown server\n"
+           "x: exit\n"
+           "?: help\n");
 }
