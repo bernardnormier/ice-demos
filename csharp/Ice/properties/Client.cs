@@ -9,12 +9,6 @@ using Demo;
 using System;
 using System.Collections.Generic;
 
-[assembly: CLSCompliant(true)]
-
-[assembly: AssemblyTitle("IcePropertiesClient")]
-[assembly: AssemblyDescription("Ice properties demo client")]
-[assembly: AssemblyCompany("ZeroC, Inc.")]
-
 public class Client
 {
     public static int Main(string[] args)

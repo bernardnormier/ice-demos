@@ -51,7 +51,7 @@ public class Client
         }
     }
 
-    private static class Error : SystemException
+    private class Error : SystemException
     {
         public Error(String msg)
             : base(msg)

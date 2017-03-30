@@ -9,12 +9,6 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
-[assembly: CLSCompliant(true)]
-
-[assembly: AssemblyTitle("IcePropertiesServer")]
-[assembly: AssemblyDescription("Ice properties demo server")]
-[assembly: AssemblyCompany("ZeroC, Inc.")]
-
 public class Server : Ice.Application
 {
     //

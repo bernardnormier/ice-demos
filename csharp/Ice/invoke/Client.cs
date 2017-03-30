@@ -52,7 +52,7 @@ public class Client
         return status;
     }
 
-    private static class ReadValueCallback
+    private class ReadValueCallback
     {
         public void invoke(Ice.Value obj)
         {
