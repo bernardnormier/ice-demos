@@ -85,13 +85,6 @@ class Server extends com.zeroc.Ice.Application
             return 1;
         }
 
-        long timeout = properties.getPropertyAsIntWithDefault("SessionTimeout", 30);
-
-        java.util.concurrent.ScheduledExecutorService executor =
-            java.util.concurrent.Executors.newScheduledThreadPool(1);
-        ReapTask reaper = new ReapTask(logger, timeout);
-        executor.scheduleAtFixedRate(reaper, timeout/2, timeout/2, java.util.concurrent.TimeUnit.SECONDS);
-        
         //
         // Create an object adapter
         //
@@ -99,10 +92,10 @@ class Server extends com.zeroc.Ice.Application
 
         SQLRequestContext.initialize(logger, pool);
         adapter.addServantLocator(new LocatorI(new BookI()), "book");
-        
-        adapter.add(new SessionFactoryI(logger, reaper, timeout),
+
+        adapter.add(new SessionFactoryI(logger),
                     com.zeroc.Ice.Util.stringToIdentity("SessionFactory"));
-        adapter.add(new Glacier2SessionManagerI(logger, reaper),
+        adapter.add(new Glacier2SessionManagerI(logger),
                     com.zeroc.Ice.Util.stringToIdentity("LibrarySessionManager"));
 
         //
@@ -113,9 +106,6 @@ class Server extends com.zeroc.Ice.Application
         shutdownOnInterrupt();
         communicator().waitForShutdown();
         defaultInterrupt();
-
-        executor.shutdown();
-        reaper.terminate();
 
         pool.destroy();
 

@@ -53,15 +53,6 @@ public class Client
 
     private static int run(Ice.Communicator communicator)
     {
-        try
-        {
-            communicator.getPluginManager().getPlugin("IceSSL");
-            _haveSSL = true;
-        }
-        catch(Ice.NotRegisteredException)
-        {
-        }
-
         HelloPrx twoway = HelloPrxHelper.checkedCast(
             communicator.propertyToProxy("Hello.Proxy").ice_twoway().ice_secure(false));
         if(twoway == null)
@@ -175,7 +166,7 @@ public class Client
                         Console.WriteLine("server delay is now set to 2500ms");
                     }
                 }
-                else if(_haveSSL && line.Equals("S"))
+                else if(line.Equals("S"))
                 {
                     secure = !secure;
 
@@ -233,16 +224,10 @@ public class Client
             "D: send greeting as batch datagram\n" +
             "f: flush all batch requests\n" +
             "T: set a timeout\n" +
-            "P: set a server delay");
-        if(_haveSSL)
-        {
-            Console.Write("\nS: switch secure mode on/off");
-        }
-        Console.WriteLine(
-            "\ns: shutdown server\n" +
+            "P: set a server delay\n" +
+            "S: switch secure mode on/off\n" +
+            "s: shutdown server\n" +
             "x: exit\n" +
             "?: help\n");
     }
-
-    private static bool _haveSSL = false;
 }
