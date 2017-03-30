@@ -9,6 +9,12 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
+[assembly: CLSCompliant(true)]
+
+[assembly: AssemblyTitle("IcePropertiesServer")]
+[assembly: AssemblyDescription("Ice properties demo server")]
+[assembly: AssemblyCompany("ZeroC, Inc.")]
+
 public class Server : Ice.Application
 {
     //
@@ -39,7 +45,7 @@ public class Server : Ice.Application
                 return _changes;
             }
         }
-        
+
         override public void shutdown(Ice.Current current)
         {
             current.adapter.getCommunicator().shutdown();
