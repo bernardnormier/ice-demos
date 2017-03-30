@@ -138,10 +138,7 @@ end
 
 status = 0
 begin
-    initData = Ice::InitializationData.new()
-    initData.properties = Ice::createProperties()
-    initData.properties.load("config.client")
-    communicator = Ice::initialize(ARGV, initData)
+    communicator = Ice::initialize(ARGV, "config.client")
     if ARGV.length > 0
         puts $0 + ": too many argumnets"
         status = 1
