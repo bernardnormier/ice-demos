@@ -16,27 +16,18 @@ public class Server extends com.zeroc.Ice.Application
         }
 
         com.zeroc.Ice.ObjectAdapter adapter = communicator().createObjectAdapter("Callback.Server");
-        CallbackSenderI sender = new CallbackSenderI(communicator());
+        CallbackSenderI sender = new CallbackSenderI();
         adapter.add(sender, com.zeroc.Ice.Util.stringToIdentity("sender"));
         adapter.activate();
 
-        Thread t = new Thread(sender);
-        t.start();
-
         try
         {
+            sender.start();
             communicator().waitForShutdown();
         }
         finally
         {
             sender.destroy();
-            try
-            {
-                t.join();
-            }
-            catch(java.lang.InterruptedException ex)
-            {
-            }
         }
 
         return 0;
