@@ -5,7 +5,7 @@
 // **********************************************************************
 
 //
-// Instal gradle Ice builder plug-in from the plug-in portal
+// Install gradle Ice builder plug-in from the plug-in portal
 //
 plugins {
     id 'com.zeroc.gradle.ice-builder.slice' version '1.4.5' apply false
@@ -42,7 +42,7 @@ subprojects {
     // Both Client and Server depend only on Ice JAR
     //
     dependencies {
-        compile 'com.zeroc:ice:3.7.2'
+        compile "com.zeroc:ice:${slice.iceVersion}"
     }
 
     //
