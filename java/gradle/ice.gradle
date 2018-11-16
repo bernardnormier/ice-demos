@@ -105,7 +105,7 @@ def demoJar(name, mainClass = name.capitalize()) {
         if(mainClass) {
             attributes("Main-Class": mainClass)
         }
-        attributes("Class-Path": configurations.runtime.resolve().collect { it.toURI() }.join(' '))
+        attributes("Class-Path": configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' '))
     }
 
     artifacts {
