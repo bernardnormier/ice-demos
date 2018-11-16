@@ -45,13 +45,4 @@ ext {
     compileSdkVersion = 24
     minSdkVersion = 24
     targetSdkVersion = 24
-
-    localDependency = { artifact, jarDir, artifactVersion ->
-        if(jarDir != null) {
-           return files("${jarDir}/${artifact}-${artifactVersion}.jar")
-        }
-        else {
-            return "com.zeroc:${artifact}:${artifactVersion}"
-        }
-    }
 }
