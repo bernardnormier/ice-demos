@@ -5,6 +5,21 @@
 import Foundation
 import Ice
 
+// Could be generated code:
+extension ObjectAdapter {
+    func add(servant: Node, id: Identity) throws -> NodePrx {
+        return try uncheckedCast(prx: add(servant: NodeDisp(servant), id: id), type: NodePrx.self)
+    }
+
+    func add(servant: File, id: Identity) throws -> FilePrx {
+        return try uncheckedCast(prx: add(servant: FileDisp(servant), id: id), type: FilePrx.self)
+    }
+
+    func add(servant: Directory, id: Identity) throws -> DirectoryPrx {
+        return try uncheckedCast(prx: add(servant: DirectoryDisp(servant), id: id), type: DirectoryPrx.self)
+    }
+}
+
 /// Servant class for Node.
 class NodeI: Node {
     private let name: String
@@ -24,15 +39,15 @@ class NodeI: Node {
     func activate(adapter: Ice.ObjectAdapter) throws {
         let id = Ice.Identity(name: parent == nil ? "RootDir" : UUID().uuidString,
                               category: "")
-        let prx = try adapter.add(servant: makeDisp(), id: id)
+
+        let prx = try addSelf(adapter: adapter, id: id)
 
         // call addChild with proxy to `self` only if parent is not nil
-        parent?.addChild(child: uncheckedCast(prx: prx, type: NodePrx.self))
+        parent?.addChild(child: prx)
     }
 
-    // Create a dispatcher for servant `self`
-    func makeDisp() -> Ice.Disp {
-        fatalError("Abstract method")
+    func addSelf(adapter _: Ice.ObjectAdapter, id _: Identity) throws -> NodePrx {
+        fatalError("abstract method")
     }
 }
 
@@ -50,9 +65,8 @@ class FileI: NodeI, File {
         lines = text
     }
 
-    // Create a dispatcher for servant `self`
-    override func makeDisp() -> Ice.Disp {
-        return FileDisp(self)
+    override func addSelf(adapter: Ice.ObjectAdapter, id: Identity) throws -> NodePrx {
+        return try adapter.add(servant: self, id: id)
     }
 }
 
@@ -71,9 +85,8 @@ class DirectoryI: NodeI, Directory {
         contents.append(child)
     }
 
-    // Create a dispatcher for servant `self`
-    override func makeDisp() -> Ice.Disp {
-        return DirectoryDisp(self)
+    override func addSelf(adapter: Ice.ObjectAdapter, id: Identity) throws -> NodePrx {
+        return try adapter.add(servant: self, id: id)
     }
 }
 
