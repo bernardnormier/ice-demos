@@ -22,8 +22,8 @@ public class Server {
         try (Communicator communicator = Util.initialize(args)) {
             ObjectAdapter adapter =
                 communicator.createObjectAdapterWithEndpoints("Hello", "default -h localhost -p 10000");
-                    adapter.add(new Printer(), Util.stringToIdentity("hello"));
-                    adapter.activate();
+            adapter.add(new Printer(), Util.stringToIdentity("hello"));
+            adapter.activate();
 
             // Wait for Ctrl+C
             try {
